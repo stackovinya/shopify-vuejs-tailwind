@@ -1,0 +1,61 @@
+
+
+
+<!-- BACKDROP -->
+<div 
+    class=" bg-[rgba(0,0,0,.5)] opacity-100 backdrop-blur-sm w-full h-[100vh] fixed top-0 left-0 z-[100] hidden"
+    id="menuDrawerBackdrop"
+></div>
+<!-- BACKDROP ENDS -->
+
+<div 
+    class="flex flex-col bg-white fixed top-0 w-full sm:w-[320px] h-[100%] z-[101] overflow-y-auto transition-all left-[-999px]"
+    id="menuDrawer"
+> 
+    <!----------- DRAWER HEADER ----------->
+    <div class="flex items-center p-3">
+        <div class="ml-auto rounded-full p-1 bg-gray-200">
+            <span class="block w-10 cursor-pointer" id="menuCloseButton">{% render 'icons', icon: 'close' %}</span>
+        </div>
+    </div>
+    <!----------- DRAWER HEADER | ENDS ----------->
+
+    <!----------- DRAWER BODY ----------->
+    <div class="grid grid-cols-6 text-secondary uppercase">
+        {% for link in linklists.header-drawer-menu.links %}
+            <a  href="{{ link.url }}"
+                class="col-span-6 text-md md:text-lg font-bold border-b border-gray-300 px-4 py-3 hover:text-primary">
+                {{ link.title }}
+            </a>
+        {% endfor %}
+    </div>
+    <!----------- DRAWER BODY | ENDS ----------->
+</div>
+
+
+
+<script>
+(function() {
+    var menuButton = document.querySelector("#menuButton");
+    var menuCloseButton = document.querySelector("#menuCloseButton");
+    var menuDrawerBackdrop = document.querySelector("#menuDrawerBackdrop");
+    
+    //on button click toggle menu
+    menuButton.onclick = function(){ toggleMenuDrawer();  };
+    menuCloseButton.onclick = function(){ toggleMenuDrawer();  };
+    menuDrawerBackdrop.onclick = function(){ toggleMenuDrawer(); };
+})();
+
+function toggleMenuDrawer(state='close',){
+    var menuDrawer = document.querySelector("#menuDrawer");
+    var menuDrawerBackdrop = document.querySelector("#menuDrawerBackdrop");
+
+    menuDrawerBackdrop.classList.toggle("block");
+    menuDrawerBackdrop.classList.toggle("hidden");
+
+    menuDrawer.classList.toggle("left-0");
+    menuDrawer.classList.toggle("left-[-999px]");
+}//func ends
+
+</script>
+

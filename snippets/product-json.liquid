@@ -1,0 +1,76 @@
+
+
+<script>
+    const PRODUCT = {{ product | json }};//LIQUID CODE
+    
+    /* ++++++++++++++++ GET SELECTED OR FIRST VARIANT BY DEFAULT +++++++++++++++++++++*/
+    /*PRODUCT.selected_variant = {{ product.selected_or_first_available_variant | json }};//LIQUID CODE*/
+    //NOT USING LIQUID selected_or_first_available_variant because of conflict with VUEJS url v=******
+    PRODUCT.selected_variant = null;//LIQUID CODE
+    /* ++++++++++++++++ GET SELECTED OR FIRST VARIANT BY DEFAULT ** ENDS +++++++++++++++++++++*/
+    
+    /* ++++++++++++++++ CHECK FOR VARIANTS +++++++++++++++++++++*/
+    PRODUCT.has_variants = (PRODUCT.options[0] == 'Title') ? false : true;
+    /* ++++++++++++++++ CHECK FOR VARIANTS ** ENDS +++++++++++++++++++++*/
+
+    /* ++++++++++++++++ COLLECT OPTION NAME & VALUES +++++++++++++++++++++*/
+    PRODUCT.options_data = [];
+    PRODUCT.options.forEach((optionName,optionNameIndex) => {
+        const optionObj = { name: optionName, values: [] };//init object
+        //loop through each variant to extract option values
+        PRODUCT.variants.forEach((variant,i)=>{
+            const variantOptionsValue = variant.options[optionNameIndex];
+            //push option value to parent object
+            if(!optionObj.values.includes(variantOptionsValue)) optionObj.values.push(variantOptionsValue);
+        });//forEach inner 1 ends
+        //push option object to optionData
+        PRODUCT.options_data.push(optionObj);
+    });//forEach ends
+    /* ++++++++++++++++ COLLECT OPTION NAME & VALUES ** ENDS +++++++++++++++++++++*/
+
+    /* ++++++++++++++++ COLLECT OPTION NAME & VALUE PAIRS FOR VARIANT +++++++++++++++++++++*/
+    PRODUCT.variants.forEach((variant,variantIndex)=>{
+        const variantOptionObj = [];
+        
+        //each variant options 
+        _.forEach(variant.options,(variantOption,variantOptionIndex)=>{
+            var obj = { name: PRODUCT.options[variantOptionIndex], value: variantOption };
+            //push option & value obj to variant object
+            variantOptionObj.push(obj);
+        });//forEach ends inner 1
+
+        //push to main product variant 
+        PRODUCT.variants[variantIndex]['options_data'] = variantOptionObj;
+    });//forEach inner 1 ends
+    /* ++++++++++++++++ COLLECT OPTION NAME & VALUE PAIRS FOR VARIANT ** ENDS +++++++++++++++++++++*/
+
+    /* ++++++++++++++++ COLLECT VARIANT IMAGES FROM IMAGE-ALT +++++++++++++++++++++*/
+    PRODUCT.variants.forEach((variant,variantIndex)=>{
+        const variantSKU = variant.sku || null;//important to pass NULL for __includes
+        //make empty array for each variant -> media
+        PRODUCT.variants[variantIndex].media = [];//init
+
+        //if product has NO variant then set all media to variant->media
+        if(!PRODUCT.has_variants) PRODUCT.variants[variantIndex].media = PRODUCT.media;
+
+        //each media 
+        PRODUCT.media.forEach((media,mediaIndex)=>{
+            //check if media alt string has variantSKU
+            if( _.includes(media.alt, variantSKU ) ) PRODUCT.variants[variantIndex].media.push(media);
+        });//forEach ends inner 1
+    });//forEach inner 1 ends
+    /* ++++++++++++++++ COLLECT VARIANT IMAGES FROM IMAGE-ALT ** ENDS +++++++++++++++++++++*/
+
+
+    /* ++++++++++++++++ COLLECT METAFIELD DESCRIPTION & FEATURES +++++++++++++++++++++*/
+    PRODUCT.metafields = {};
+
+    //PRODUCT SHORT DESCRIPTION
+    PRODUCT.metafields.short_description = `{{ product.metafields.custom.short_description | metafield_tag }}`;
+
+    //PRODUCT FEATURES 
+    PRODUCT.metafields.features = `{{ product.metafields.custom.features.value }}`;
+   
+    /* ++++++++++++++++ COLLECT METAFIELD DESCRIPTION & FEATURES ** ENDS +++++++++++++++++++++*/
+    
+</script> 

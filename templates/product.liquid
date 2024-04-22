@@ -1,0 +1,200 @@
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+
+{% render 'product-json' %}
+
+{% assign productVariant = product.selected_or_first_available_variant %}
+
+
+<div v-cloak id="__productAPP">
+<!---------------------- PRODUCT DETAILS - TOP ---------------------------->
+<div class="container relative">
+    <div class="grid grid-cols-12 my-8 mb-16">
+        <div class="col-span-full sm:col-span-7 sm:h-full px-0 sm:px-6">
+            {%  render 'product-images' %}
+        </div>
+
+        <div class="col-span-full sm:col-span-5 flex flex-col p-5 ">
+            {% comment %}------- PRODUCT TITLE --------{% endcomment %}
+            <h1 class="text-2xl sm:text-4xl font-bold">[[ product.title ]]</h1>
+
+            {% comment %}------- PRODUCT VARIANT SKU --------{% endcomment %}
+            <p class="text-sm text-gray-500">SKU: [[ product.selected_variant.sku ]]</p>
+
+            {% comment %} PRODUCT PRICE {% endcomment %}
+            <div class="flex flex-col mt-3">
+                <div class="flex items-center gap-2 text-black">
+                    <span class="text-xl">[[ currency.symbol ]] [[ getSalePrice ]]</span>
+                    <span class="text-gray-400 line-through text-xs">[[ currency.symbol ]] [[ getComparedPrice ]]</span>
+                </div>
+                <p class="text-xs text-gray-500">Inclusive of all taxes.</p>
+            </div>
+            {% comment %} PRODUCT PRICE **** ENDS {% endcomment %}
+
+
+            {% comment %} PRODUCT - CART BUTTONS {% endcomment %}
+            <div class="flex flex-col py-3">
+                {% comment %} ADD TO CART {% endcomment %}
+                {% render 'product-blocks', block: 'add_to_cart_button' %}
+                {% comment %} ADD TO CART **** ENDS {% endcomment %}
+
+                {% comment %} OUT OF STOCK {% endcomment %}
+                {% render 'product-blocks', block: 'out_of_stock_button' %}
+                {% comment %} OUT OF STOCK **** ENDS {% endcomment %}
+            </div>
+            {% comment %} PRODUCT - CART BUTTONS | ENDS {% endcomment %}
+
+
+        </div>
+    </div>
+</div>
+<!---------------------- PRODUCT DETAILS - TOP | ENDS ---------------------------->
+
+</div><!-- v-cload & #app -->
+
+
+
+
+
+<script>
+    const VUEMIXIN_ProductMain = {
+        data(){
+            return {
+                product: PRODUCT || {},
+                variants: PRODUCT.variants,
+                currency: CURRENCY || {},
+                productForm: {},
+                outOfStockNotification: {},
+                showAccordianMenu: 'info',
+            } 
+        },//data ends
+        methods: {
+            getAllValuesByOptionName(optionName){
+                const optionDataObj = _.find(this.product.options_data,{name:optionName});
+                //return
+                return optionDataObj.values;
+            },//func ends   
+            getSelectedVariantOptionValueByName(optionName){//gives value of option that is avialable in selected variant
+                const optionObj = _.find(this.product.selected_variant.options_data,{ name: optionName }); 
+                //return value only
+                return optionObj.value || null;
+            },//func ends 
+            isValidOptionValue(optionName,optionValue){
+                //check main product options 
+                const optionObj = _.find(this.product.options_data,{ name: optionName });//find ends
+                //check if option values has given value 
+                //if option name is same as given option name (ex.Color == Color)
+                if(optionObj.name == optionName){
+                   return _.indexOf(optionObj.values, optionValue) != -1;
+                }//if ends 
+            },//func ends
+            updateUrlWithVariantId(variantId){
+                let url = window.location;//get present location
+                let urlParams = new URLSearchParams(window.location.search);//get search params in object
+                urlParams.set('variant',variantId);//set variant id
+                const new_url = new URL(`${url.origin}${url.pathname}?${urlParams.toString()}`);//updated url
+                window.history.pushState('page2', 'Title', new_url);//push without reloading
+            },//func ends
+            handleAddToCart(id=null, quantity=1){
+                const arr = [];
+                //push single id,quantity object
+                arr.push({ id, quantity });
+                
+                //dispatch action in vuex store
+                this.$store.dispatch('addToCart', arr);//call action to add item to cart in Vuex Store
+                //open cart drawer
+                this.$store.commit('openCartDrawer', true);
+            },//method func ends
+            handleAddToCartFloatBlockOnScroll(el){
+                const footerOffsetTop = document.getElementById('shopify-section-footer').offsetTop;
+
+                if ( (window.scrollY + screen.height) >= footerOffsetTop ) {
+                    //window.scroll(0, 0);
+                    this.showAddToCartFloatBlock = false;
+                    
+                }else{
+                    this.showAddToCartFloatBlock = true;
+                }
+            },//method func ends
+        },//methods ends
+        created() {
+            //check v=***** or variant=******* is available
+            let urlParams = new URLSearchParams(window.location.search);//get search params in object
+            let urlVariantId = urlParams.get('variant') || null;//variant id in url 
+            
+            //if variant id is available in url 
+            if(urlVariantId){
+                let selected_variant = _.find(this.product.variants,{ id: parseInt(urlVariantId) });//find variant match by id
+                if(selected_variant) this.product.selected_variant = selected_variant;//set variant by id in url
+            }else{
+                //select default variant by random
+                this.product.selected_variant = this.product.variants[0];
+            }///if-else ends
+
+            console.log(this.product)
+
+            //create empty formdata with option name
+            _.forEach(this.product.options,(optionName) => {
+                var optionValue =  _.find(this.product.selected_variant.options_data, { name: optionName });
+                //set initial option value pairs to product form
+                this.productForm[optionName] = optionValue.value || null;
+            });//foreach ends
+           
+        },//created ends
+        computed: {
+            getComparedPrice(){ return this.product.compare_at_price / 100  },//getComparedPrice ends
+            getSalePrice(){ return  this.product.price / 100  },//getSalePrice ends
+        },//computed ends
+        watch:{
+            //product form onchange function
+            productForm:{
+                handler(newFormData) {
+                    const variant = {};
+                    
+                    //foreach variants 
+                    _.forEach(this.product.variants, (variantObj,variantObjIndex) => {
+                        const optionsDataRevised = {};
+                        //foreach variant options data for deep processing
+                        _.forEach(variantObj.options_data,(optionObj) => {
+                            optionsDataRevised[optionObj.name] = optionObj.value;//adding key = value data
+                        });//foreach inner 1
+                        //check the productform object and main product variant object is SAME
+                        const isObjectsEqual = _.isEqual( optionsDataRevised, newFormData);
+                        //if objects are equal 
+                        if(isObjectsEqual) this.product.selected_variant = variantObj;
+                    });//foreach ends 
+                }, deep: true
+            },//productForm ends
+            'product.selected_variant'(){
+                //change url v=#### 
+                this.updateUrlWithVariantId(this.product.selected_variant.id)
+                //set outofstock notification form data as per selected variant
+                this.outOfStockNotification.product_id = this.product.id;
+                this.outOfStockNotification.variant_id = this.product.selected_variant.id;
+
+            },//func ends
+        },//watch ends
+    };//VUEMIXIN_ProductMain ENDS
+    
+    //check if mixins are there
+    const mixins = [];
+    if( typeof VUEMIXIN_deviceRequest !== 'undefined' ) mixins.push(VUEMIXIN_deviceRequest);
+    if( typeof VUEMIXIN_ProductMain !== 'undefined' ) mixins.push(VUEMIXIN_ProductMain);
+    if( typeof VUEMIXIN_ProductImages !== 'undefined' ) mixins.push(VUEMIXIN_ProductImages); 
+    //if( typeof VUEMIXIN_ProductDevices !== 'undefined' ) mixins.push(VUEMIXIN_ProductDevices);
+    //create app 
+    const VUEAPP_productpage = Vue.createApp({
+        delimiters: ['[[', ']]'],//custom delimeter to avoid conflict with liquid
+        mixins: mixins,
+        created(){
+            //this.productMedia = this.product.media;//send data between mixins
+            
+        },//created ends
+    }).use(VUESTORE_Cart);
+
+    VUEAPP_productpage.mount('#__productAPP')
+</script> 
+
+
+

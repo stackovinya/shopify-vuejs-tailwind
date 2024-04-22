@@ -1,0 +1,61 @@
+
+
+<script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
+<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+<script src="https://unpkg.com/vuex@4.1.0/dist/vuex.global.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css"
+/>
+<script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
+
+
+
+
+<script>  
+    const __SHOP = {};
+    __SHOP.money_format = '{{ shop.money_format }}';//LIQUID CODE
+    __SHOP.symbol = __SHOP.money_format.split(' ')[0];//just get symbol ex.Rs.
+    
+    //GLOBAL CURRENCY OBJECT
+    const CURRENCY = {}
+    CURRENCY.money_format = '{{ shop.money_format }}';//LIQUID CODE
+    CURRENCY.symbol = CURRENCY.money_format.split(' ')[0];//just get symbol ex.Rs.
+    CURRENCY.iso_code = '{{ shop.currency }}';//LIQUID CODE
+    CURRENCY.money_with_currency_format = '{{ shop.money_with_currency_format }}';//LIQUID CODE
+
+    //SHOPIFY STOREFRONT API 
+    const SF_API = {
+        url: 'https://casetonics.myshopify.com/api/2023-07/graphql.json',
+        headers: {
+            'X-Shopify-Storefront-Access-Token': '9f2cda9a3c067e6a87e3c07ef7a2cf5a', 
+            'Content-Type': 'application/json' 
+        },
+        getIdFromGid(gid=null){
+          if( !gid.includes('gid') ) return null;
+          let id = gid.replace ( /[^\d.]/g, '' );
+          return parseInt(id);
+        },
+    };
+
+
+  function TRANSFORM_OBJECT(obj) {
+    if (!obj || ["string", "boolean", "number"].includes(typeof obj)) {
+      return obj;
+    }
+
+    if (Array.isArray(obj)) {
+      return obj.map(TRANSFORM_OBJECT);
+    } else if (obj.hasOwnProperty('edges')) {
+      return obj.edges.map((edge) => TRANSFORM_OBJECT(edge.node));
+    }
+
+    return Object.keys(obj).reduce((result, key) => {
+      result[key] = TRANSFORM_OBJECT(obj[key]);
+      return result;
+    }, {});
+  };//TRANSFORM_OBJECT ENDS
+</script>

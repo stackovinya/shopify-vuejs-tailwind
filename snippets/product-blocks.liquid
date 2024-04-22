@@ -1,0 +1,33 @@
+
+
+
+
+{% comment %}------------------------- BREAK --------------------------{% endcomment %}
+
+{% if block == "out_of_stock_button" %}
+
+    <button 
+        class="flex items-center justify-center text-gray-200 bg-gray-400 rounded-lg w-full sm:w-auto py-3 my-3"
+        @click="handleAddToCart(product.selected_variant.id, 1)"
+        v-if="!product.selected_variant.available"
+    >
+        <span class="text-lg font-bold uppercase">OUT OF STOCK</span>
+    </button>
+
+{% endif %}
+
+{% comment %}------------------------- BREAK --------------------------{% endcomment %}
+
+{% if block == "add_to_cart_button" %}
+
+    <button 
+        class="flex items-center justify-center text-white bg-primary rounded-lg w-full sm:w-auto py-3 my-3"
+        @click="handleAddToCart(product.selected_variant.id, 1)"
+        v-if="product.selected_variant.available"
+    >
+        <span class="text-lg font-bold uppercase">Add to CART</span>
+    </button>
+
+{% endif %}
+
+{% comment %}------------------------- BREAK --------------------------{% endcomment %}

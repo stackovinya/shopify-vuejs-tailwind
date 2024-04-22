@@ -1,0 +1,14 @@
+{
+  "name": "statsgrow-theme-v1",
+  "version": "1.0.0",
+  "description": "SHopify theme ",
+  "main": "index.js",
+  "scripts": {
+    "tailwind": "npx tailwindcss -i ./assets/tw-input.css -o ./assets/tw-output.css --watch"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "tailwindcss": "^3.4.3"
+  }
+}

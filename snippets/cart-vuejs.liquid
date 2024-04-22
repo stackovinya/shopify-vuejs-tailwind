@@ -1,0 +1,85 @@
+
+
+
+
+
+<script>
+const VUESTORE_Cart = Vuex.createStore({
+    state () {
+        return {
+        openCartDrawer: false,
+        cart: {},
+        cartError: null
+        }
+    },//state ends
+    mutations: {
+        openCartDrawer(state, payload){ 
+            state.openCartDrawer = payload;//set true or false
+            
+            // When the modal is shown, we want a fixed body
+            if(state.openCartDrawer) {
+                document.body.style.position = 'fixed';
+                document.body.style.top = `-${window.scrollY}px`;//set present scroll position
+            };//if ends
+
+            // When the modal is hidden, we want to remain at the top of the scroll position
+            if(!state.openCartDrawer) {
+                document.body.style.position = '';
+                document.body.style.top = '';
+            };//if ends
+        },//mutations->openCartDrawer func ends
+    },//mutations ends
+    actions:{
+        addToCart({ state, dispatch }, itemsArray=[]){
+            window.scrollTo({ top: 0, behavior: 'smooth' });//SCROLL TOP IS MUST 
+
+            //post ajax to shopify api
+            axios.post(`/cart/add.js`,{ items: itemsArray }, {  
+                headers: { 'Content-Type': 'application/json' }
+            })
+            .then(function ({ data }) { dispatch('getCartData');/* get updated cart data*/ }) 
+            .catch(function ({ response }) { state.cartError = response.data || null; }); 
+    
+        },//actions - addToCart func ends
+        getCartData({ state }){
+
+            //ajax to shopify api and get cart data
+            axios.get(`/cart.js`)
+            .then(function ({ data }) { 
+                //set cart data 
+                state.cart = data;/*set state data*/ 
+            })
+            .catch(function (error) { console.log(error) }); 
+        },//actions - getCartData func ends
+        updateCart({ state }, itemsArr=[]){
+            
+            //post ajax to shopify api
+            axios.post(`/cart/change.js`, itemsArr , { 
+                headers: { 'Content-Type': 'application/json' }
+            })
+            .then(function ({ data }) { state.cart = data;/*get latest cart data*/ }) 
+            .catch(function (error) { console.log(error.response) });                
+        },//actions - updateCart func ends
+        quantityChange({ dispatch }, data){
+            let obj = { id: data.lineKey, quantity: data.quantity };
+            
+            //update cart 
+            if( obj.quantity >= 0 ) dispatch('updateCart', obj);
+        },//actions->updateCart func ends
+    },//actions ends
+    getters: {
+        itemsSubTotal(state){ 
+            const v = state.cart.items_subtotal_price / 100;
+            return v.toLocaleString(); 
+        },
+        itemPrice: (state) => (value) => { return value / 100; },
+        cartItemsCount: (state) => { return state.cart.items && state.cart.items.length; },
+        cartErrorMessage: (state) => {
+            const message = state.cartError.message || null;
+            if(message == 'Cart Error') return state.cartError.description || 'Unknown error';
+            //default
+            return 'Unknow error'
+        }
+    },//getters ends
+});//vuestore ends
+</script>

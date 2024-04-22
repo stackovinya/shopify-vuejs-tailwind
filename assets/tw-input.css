@@ -1,0 +1,102 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    html {
+        font-family: "Roboto", system-ui, sans-serif;
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    [v-cloak] {
+        display: none;
+    }
+
+    /* VUE SYNTEX HIDE UNTIL PAGE IS LOADED*/
+}
+
+
+
+
+/* RICH TEXT CONTENT */
+.shopify_richText p {
+    @apply text-sm mb-2
+}
+
+.shopify_richText strong {
+    @apply font-bold
+}
+
+.shopify_richText h2 {
+    @apply text-2xl font-bold mb-3
+}
+
+.shopify_richText h4 {
+    @apply text-xl font-bold mb-3
+}
+
+.shopify_richText h6 {
+    @apply text-sm font-bold mb-3
+}
+
+.shopify_richText ul {
+    @apply ml-4 list-disc list-inside
+}
+
+.shopify_richText ul li {
+    @apply text-sm leading-6
+}
+
+.shopify_richText a {
+    @apply text-blue-500
+}
+
+/* RICH TEXT CONTENT - ENDS */
+
+
+/* SHOPIFY POLICY PAGE */
+.shopify-policy__container {
+    @apply container px-6
+}
+
+.shopify-policy__title {
+    @apply py-10
+}
+
+.shopify-policy__title h1 {
+    @apply text-2xl font-bold
+}
+
+.shopify-policy__body p {
+    @apply mb-2
+}
+
+.shopify-policy__body a {
+    @apply text-blue-700 underline
+}
+
+.shopify-policy__body h2 {
+    @apply mb-2 mt-6 text-lg font-bold
+}
+
+.shopify-policy__body h3 {
+    @apply mb-2 mt-6 font-bold
+}
+
+.shopify-policy__body ul {
+    @apply my-6 list-disc list-inside mx-4
+}
+
+.shopify-policy__body ul li {
+    @apply mb-3
+}
+
+.shopify-policy__body table {
+    @apply mx-4 my-4 border
+}
+
+.shopify-policy__body table td, .shopify-policy__body table th {
+    @apply border
+}
+
+/* SHOPIFY POLICY PAGE - ENDS */

@@ -1,0 +1,160 @@
+
+
+<!------------------------- SWIPER SLIDER ------------------------->
+<div class="block swiper relative" id="productImagesSlider">
+  <!------------ SWIPER SLIDES WRAPPER -------------->
+  <div class="swiper-wrapper min-h-[400px] ">  
+    <!-- Auto Slides -->
+  </div>
+  <!------------ SWIPER SLIDES WRAPPER | ENDS -------------->
+
+  <!------------ SWIPER PAGINATION -------------->
+  <div class="relative -mt-3">
+    <div class="swiper-pagination"></div>
+  </div>
+  <!------------ SWIPER PAGINATION | ENDS -------------->
+
+  <!------------ SWIPER BUTTONS -------------->
+  <div class="hidden sm:flex items-center absolute left-0 right-0 w-full px-3" 
+    style="z-index: 50; top: calc(50% - 17px);"
+  >
+     <div class="block h-[35px] w-[35px] bg-gray-200 rounded-full p-1 cursor-pointer button-prev" 
+      style="left: 10px;"
+    >
+      <span class="fill-black">{% render 'icons', icon: 'chevron-left' %}</span>
+    </div> 
+    <div class="block ml-auto h-[35px] w-[35px] bg-gray-200 rounded-full p-1 cursor-pointer button-next" 
+      style="right: 10px;"
+    >
+      <span class="fill-black">{% render 'icons', icon: 'chevron-right' %}</span>
+    </div>
+  </div>
+  <!------------ SWIPER BUTTONS | ENDS -------------->
+  
+</div>
+<!------------------------- SWIPER SLIDER | ENDS ------------------------->
+
+
+<script type="text/javascript">
+  //images handler mixnin for Vue app
+  const VUEMIXIN_ProductImages = {
+    data() {
+        return {
+          activeSlide: 0,
+          slides: [],
+          wrapperEl: null,
+          swiperEl: null
+        }
+    },
+    created(){
+
+    },//created ends
+    mounted: function() { // The hook. Here, Vue has already worked its magic.
+      //set wrapper element for furtur processes
+      this.wrapperEl = this.$refs.mobileSlidesWrapper;
+      
+    },//mounted ends
+    methods: {
+      initSwiperSlider(newSwiperSlides=[]){
+        let swiperEl = this.swiperEl;
+        
+        //swiper
+        this.swiperEl = new Swiper('#productImagesSlider', {
+          // Optional parameters
+          direction: 'horizontal', simulateTouch: false, loop: true,
+          // If we need pagination
+          pagination: { el: '.swiper-pagination', },
+          // Navigation arrows
+          navigation: { nextEl: '.button-next', prevEl: '.button-prev', },
+          //virtual: { cache: false, enabled: true, slides: newSwiperSlides, },//virtual ends
+        });//Swiper ends
+
+        //append new slides
+        this.swiperEl.appendSlide(newSwiperSlides);
+        //update
+        //this.swiperEl.updateSlides();
+      },//method ends
+      slide(type){ 
+        const wrapper = document.getElementById('slides');
+        const firstChild = this.$refs.slides[0] || null;
+        const widthOffset = 10; 
+        
+        //scroll left by adding width of first child
+        if(type == 'next') wrapper.scrollLeft += firstChild.scrollWidth + widthOffset;
+        //scroll right by adding width of first child
+        if(type == 'previous') wrapper.scrollLeft -= firstChild.scrollWidth + widthOffset;
+      },//slide ends
+      /* --------------- METHOD BREAK -------------- */
+      setActive(index){
+        this.activeSlide = index;
+        //scroll mobile slide
+        const wrapper = this.wrapperEl;
+        //const wrapper = this.$refs.mobileSlidesWrapper;
+        const slideWidth = wrapper.children[0].offsetWidth;//get width of first slide
+        
+        //scroll image slide to desired location
+        wrapper.scrollLeft = slideWidth * index;//slide width * index gives scroll locaiton
+      },//setActive ends
+      /* --------------- METHOD BREAK -------------- */
+      handleMobileScroll(e){
+        const target = e.target;
+        const scrollLocation = target.scrollLeft;
+        const slideIndex = target.scrollLeft / target.offsetWidth ;
+
+        //set slide index to active for pagination
+        if(Number.isInteger(slideIndex)) this.activeSlide = slideIndex;
+      },//handleMobileScroll ends
+      updateMediaSlidesBySelectedVariant_del(){
+        const variantMedia = [];
+         
+        //foreach media in product
+        _.forEach(this.product.media,(media) => {
+          //check if SKU is available in IMAGE ALT string
+          if(_.includes(media.alt, this.selectedVariant.sku)) variantMedia.push( media );//push object to array
+        });
+
+        //set selected variant slides 
+        this.slides = this.selectedVariant.media;
+      },//method func ends
+    },//methods
+    watch:{
+        //product variant change
+        'product.selected_variant'(selectedVariant){
+          //set selected variant slides 
+          this.slides = this.product.selected_variant.media;
+          
+          //set first slide as ACTIVE when wrapper is loaded
+          //this.wrapperEl && this.setActive(0);
+          //console.log(newSlides, oldSlides)
+          
+        },//func ends
+        'slides'(newSlides, oldSlides){this2 = this;
+          window.scrollTo({ top: 0, behavior: "smooth" });//scroll top to see new images
+
+          //make slides for swiper product images
+          const newSwiperSlides = [];
+          newSlides.forEach(function(s){
+            //push new slides
+            newSwiperSlides.push(`
+              <div class="swiper-slide px-16">
+                <img src="${s.preview_image.src}" alt="${s.preview_image.src}" 
+                  class="w-full object-contain object-center overflow-hidden">
+              </div>
+            `)
+          });
+          
+          //if already initialize swiper then clear all slides
+          if(this.swiperEl){
+            this.swiperEl.removeAllSlides();//this is must to remove all divs 
+            this.swiperEl.destroy();//this is must to reset 
+          };//if ends
+          
+          //initiate the swiper slider with slides
+          this.initSwiperSlider(newSwiperSlides);
+        },//func ends
+    },//watch ends   
+  };//VUEMIXIN ends
+
+</script> 
+
+
