@@ -1,54 +1,53 @@
+<script type="text/javascript" src="https://widget.clutch.co/static/js/widget.js"></script>
 
 
-<div class="bg-secondary text-white">
+
+<div class="bg-primary text-white">
     <div class="container grid grid-cols-12 gap-4 py-10">
+
 
         <div class="col-span-12 md:col-span-4 order-last flex flex-col px-4 mt-6 md:mt-0">
             <span class="block w-40 cursor-pointer fill-white mb-6">{% render 'icons', icon: 'logo-text' %}</span>
             <div class="flex flex-col">
-                <h6 class="font-bold mb-1">DEULEC INNOVATIONS PRIVATE LIMITED</h6>
-                <p class="mb-3 text-sm">
-                    2nd Floor, Jaylaxmi Complex, 4 Anand Nagar Society, Jetalpur, <br>
-                    Vadodara - 390007, Gujarat - INDIA
-                </p>
-                <a class="underline mb-3" href="tel:+91-9974227771">+91-9974227771</a>
-                <a class="underline mb-3" href="mailto:hello@deulec.com">hello@deulec.com</a>
+                <h6 class="font-bold mb-1">STATSGROW CONULTANCY</h6>
+                <a class="underline mb-3" href="mailto:hello@deulec.com">hello@statsgrow.com</a>
             </div>
 
             <div class="flex items-center gap-3 py-3">
-                <a class="flex" href="https://www.facebook.com/DeulecIndia" target="_blank">
-                    <span class="block w-10 h-10 cursor-pointer fill-white">{% render 'icons', icon: 'facebook' %}</span>
+                <a class="flex" href="https://www.linkedin.com/company/statsgrow" target="_blank">
+                    <span class="block w-10 h-10 cursor-pointer fill-white">{% render 'icons', icon: 'linkedin'
+                        %}</span>
                 </a>
-                <a class="flex" href="https://www.instagram.com/deulec.case/" target="_blank">
-                    <span class="block w-10 h-10 cursor-pointer fill-white">{% render 'icons', icon: 'instagram' %}</span>
-                </a>
+            </div>
+
+            <div class="hidden flex-col mt-4">
+                <h6 class=" mb-1">Review us on Clutch</h6>
+                <div class="clutch-widget" data-url="https://widget.clutch.co" data-widget-type="17" data-height="auto"
+                    data-nofollow="true" data-expandifr="true" data-shape="round" data-scale="100"
+                    data-clutchcompany-id="2364189"></div>
             </div>
         </div>
 
         <div class="col-span-12 md:col-span-4 order-1 flex flex-col px-4 py-3">
             <h6 class="text-lg font-bold mb-3">Information</h6>
             {% for link in linklists.info-links-footer.links %}
-                <a  href="{{ link.url }}"
-                    class="mb-1"
-                >
-                    {{ link.title }}
-                </a>
+            <a href="{{ link.url }}" class="mb-1">
+                {{ link.title }}
+            </a>
             {% endfor %}
         </div>
 
         <div class="col-span-12 md:col-span-4 order-2 flex flex-col px-4 py-3">
             <h6 class="text-lg font-bold mb-3">Quick Links</h6>
             {% for link in linklists.quick-links-footer.links %}
-                <a  href="{{ link.url }}"
-                    class="mb-1"
-                >
-                    {{ link.title }}
-                </a>
+            <a href="{{ link.url }}" class="mb-1">
+                {{ link.title }}
+            </a>
             {% endfor %}
         </div>
     </div>
 
     <div class="container flex items-center text-sm py-6 px-4">
-        <p>Copyright 2024 © Deulec Innovations Private Limited, India. All Rights Reserved.</p>
+        <p>Copyright 2024 © Statsgrow Consultancy, India. All Rights Reserved.</p>
     </div>
 </div>
