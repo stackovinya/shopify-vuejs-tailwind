@@ -1,13 +1,23 @@
 <div class="">
-   <div class="container max-w-5xl flex flex-col my-4 px-5 py-16">
-      <span class="text-primary uppercase text-sm mb-3">{{ page.metafields.custom.page_type }}</span>
-      <h1 class="text-3xl md:text-5xl font-bold">{{ page.title }}</h1>
+   <div class="container max-w-5xl flex flex-col my-4 px-5 py-12">
+        <h1 class="text-3xl md:text-5xl font-bold text-primary mb-3">{{ page.title }}</h1>
+        <p class="text-gray-500">
+            Elevate your business strategy with tailored solutions designed to maximize growth and efficiency.From startup guidance to corporate optimization, our consulting services empower you to navigate challenges and seize opportunities. Unlock your company's full potential with expert advice, personalized strategies, and measurable results.
+        </p>
    </div>
 </div>
 
-<div class="container max-w-5xl shopify_richText px-5 my-5">
-   {{ page.content }}
-</div>
+
+<div class="container max-w-5xl grid grid-cols-12 gap-4 px-5 my-5 mb-20">
+    {% render "services-single-block",
+        name: "Digital Marketing", tag: "Consulting", href: "/pages/digital-marketing"
+        description: "In today's digital age, digital marketing is paramount for businesses to thrive. It enables precise targeting, reaching audiences where they spend most of their time online."
+    %}
+    {% render "services-single-block",
+        name: "Brand Building", tag: "Consulting", href: "/pages/brand-building"
+        description: "Brand building fosters trust, loyalty, and recognition, setting businesses apart in crowded markets. It shapes perceptions, drives customer engagement, and fuels long-term success and sustainability."
+    %}
+</div> 
 
 
 <div class="container max-w-5xl px-5 my-3">
