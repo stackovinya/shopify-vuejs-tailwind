@@ -1,0 +1,15 @@
+<div class="">
+   <div class="container max-w-5xl flex flex-col my-4 px-5 py-16">
+      <span class="text-primary uppercase text-sm mb-3">{{ page.metafields.custom.page_type }}</span>
+      <h1 class="text-3xl md:text-5xl font-bold">{{ page.title }}</h1>
+   </div>
+</div>
+
+<div class="container max-w-5xl shopify_richText px-5 my-5">
+   {{ page.content }}
+</div>
+
+
+<div class="container max-w-5xl px-5 my-3">
+   {% render "talk-to-us-block" %}
+</div>

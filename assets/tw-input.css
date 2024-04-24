@@ -20,7 +20,7 @@
 
 /* RICH TEXT CONTENT */
 .shopify_richText p {
-    @apply text-sm mb-2
+    @apply mb-2
 }
 
 .shopify_richText strong {
@@ -32,11 +32,11 @@
 }
 
 .shopify_richText h4 {
-    @apply text-xl font-bold mb-3
+    @apply text-xl mb-3
 }
 
 .shopify_richText h6 {
-    @apply text-sm font-bold mb-3
+    @apply mb-3
 }
 
 .shopify_richText ul {
@@ -44,7 +44,7 @@
 }
 
 .shopify_richText ul li {
-    @apply text-sm leading-6
+    @apply leading-6
 }
 
 .shopify_richText a {
