@@ -1,7 +1,8 @@
 
 
 {% if button == "simple" %}
-   <a class="text-md md:text-lg bg-primary text-white uppercase font-bold rounded-full px-4 py-2" href="{{ href }}">
+   <a class="flex items-center text-md md:text-md bg-primary text-white uppercase rounded-full px-5 py-3" href="{{ href }}">
       {{ text }}
+      <span class="block w-6 fill-white">{% render "icons", icon: "arrow-north-east" %}</span>
    </a>
 {% endif %}
