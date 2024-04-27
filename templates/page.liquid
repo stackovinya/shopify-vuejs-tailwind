@@ -4,7 +4,7 @@
          <span class="text-primary uppercase text-sm mb-3">{{ page.metafields.custom.page_type }}</span>
          <h1 class="text-3xl md:text-5xl font-bold mb-3">{{ page.title }}</h1>
          <p class="text-lg mb-3">
-            In today's digital age, influencer marketing has become a cornerstone of successful business strategies. By collaborating with right influencers can boost your brand awareness efforts.
+            {{ page.metafields.custom.short_description | metafield_tag  }}
          </p>
          <div class="my-4 self-start">
             {% render "buttons", button: "simple", text: "Talk to us", href: "/pages/contact" %}
